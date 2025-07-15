@@ -1,0 +1,12 @@
+{
+  "name": "auction-service",
+  "version": "1.0.0",
+  "description": "",
+  "dependencies": {
+    "express": "^4.19.2",
+    "serverless-http": "^3.2.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.3"
+  }
+}
