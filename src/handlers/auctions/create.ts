@@ -1,22 +1,25 @@
-import { APIGatewayProxyEvent } from 'aws-lambda'
-import AWS from 'aws-sdk'
+import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
 import { v4 as uuid } from 'uuid'
 
-const dynamoDb = new AWS.DynamoDB.DocumentClient()
+import { dynamoDb } from '../../lib/dynamo'
+import { LambdaResponse } from '../../lib/responses'
 
-async function createAuction(event: APIGatewayProxyEvent) {
+async function createAuction(
+  event: APIGatewayProxyEvent,
+): Promise<APIGatewayProxyResult> {
   if (!event.body) {
-    return {
-      error: 'Body is required',
-    }
+    return LambdaResponse(400, {
+      error: 'Request body is required',
+    })
   }
+  const body = JSON.parse(event.body)
 
-  const { title } = JSON.parse(event.body)
+  const { title } = body
 
   if (!title) {
-    return {
+    return LambdaResponse(400, {
       error: 'Title is required',
-    }
+    })
   }
 
   const auction = {
@@ -29,26 +32,20 @@ async function createAuction(event: APIGatewayProxyEvent) {
   try {
     await dynamoDb
       .put({
-        TableName: 'AuctionsTable',
+        TableName: process.env.AUCTIONS_TABLE_NAME!,
         Item: auction,
       })
       .promise()
   } catch (error) {
     console.error('Error creating auction:', error)
-    return {
-      statusCode: 500,
-      body: {
-        error: 'Could not create auction',
-      },
-    }
+    return LambdaResponse(500, {
+      error: 'Could not create auction',
+    })
   }
-  return {
-    statusCode: 201,
-    body: {
-      message: 'Auction created successfully',
-      auction,
-    },
-  }
+  return LambdaResponse(201, {
+    message: 'Auction created successfully',
+    auction,
+  })
 }
 
 export const handler = createAuction

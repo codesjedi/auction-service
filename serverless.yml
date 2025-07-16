@@ -8,11 +8,9 @@ provider:
   runtime: nodejs22.x
   stage: ${opt:stage, 'dev'}
   iamRoleStatements:
-    - Effect: Allow
-      Action:
-        - dynamodb:PutItem
-      Resource:
-        - arn:aws:dynamodb:${aws:region}:${aws:accountId}:table/AuctionsTable
+    - ${file(src/iam/AuctionsTableIAM.yml):AuctionsTableIAM}
+  environment:
+    AUCTIONS_TABLE_NAME: ${self:custom.AuctionsTable.name}
 
 functions:
   api:
@@ -21,14 +19,9 @@ functions:
       - httpApi: 'POST /auctions'
 resources:
   Resources:
-    AuctionsTable:
-      Type: AWS::DynamoDB::Table
-      Properties:
-        TableName: AuctionsTable
-        BillingMode: PAY_PER_REQUEST
-        AttributeDefinitions:
-          - AttributeName: id
-            AttributeType: S
-        KeySchema:
-          - AttributeName: id
-            KeyType: HASH
+    AuctionsTable: ${file(src/resources/AuctionsTable.yml):AuctionsTable}
+
+custom:
+  AuctionsTable:
+    name: !Ref AuctionsTable
+    arn: !GetAtt AuctionsTable.Arn
