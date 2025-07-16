@@ -13,10 +13,14 @@ provider:
     AUCTIONS_TABLE_NAME: ${self:custom.AuctionsTable.name}
 
 functions:
-  api:
+  createAuction:
     handler: src/handlers/auctions/create.handler
     events:
       - httpApi: 'POST /auctions'
+  getAuctions:
+    handler: src/handlers/auctions/get.handler
+    events:
+      - httpApi: 'GET /auctions'
 resources:
   Resources:
     AuctionsTable: ${file(src/resources/AuctionsTable.yml):AuctionsTable}

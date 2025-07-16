@@ -4,10 +4,10 @@ import middy from '@middy/core'
 import httpjsonBodyParser from '@middy/http-json-body-parser'
 import httpEventNormalizer from '@middy/http-event-normalizer'
 import httpErrorHandler from '@middy/http-error-handler'
+import createHttpError from 'http-errors'
 
 import { dynamoDb } from '../../lib/dynamo'
 import { LambdaResponse } from '../../lib/responses'
-import createHttpError from 'http-errors'
 
 async function createAuction(
   event: APIGatewayProxyEvent,
@@ -52,7 +52,8 @@ async function createAuction(
   })
 }
 
-export const handler = middy(createAuction)
+export const handler = middy()
   .use(httpjsonBodyParser())
   .use(httpEventNormalizer())
   .use(httpErrorHandler())
+  .handler(createAuction)
