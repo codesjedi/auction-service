@@ -1,12 +1,15 @@
 {
   "name": "auction-service",
   "version": "1.0.0",
-  "description": "",
   "dependencies": {
-    "express": "^4.19.2",
-    "serverless-http": "^3.2.0"
+    "@types/aws-lambda": "^8.10.150",
+    "aws-sdk": "^2.1692.0",
+    "serverless-http": "^3.2.0",
+    "uuid": "^11.1.0"
   },
-  "devDependencies": {
-    "@types/express": "^5.0.3"
+  "description": "",
+  "scripts": {
+    "dev": "serverless dev",
+    "deploy": "serverless deploy"
   }
 }
