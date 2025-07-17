@@ -36,6 +36,9 @@ functions:
 resources:
   Resources:
     AuctionsTable: ${file(src/resources/AuctionsTable.yml):AuctionsTable}
+package:
+  patterns:
+    - '!node_modules/**'
 
 custom:
   AuctionsTable:
