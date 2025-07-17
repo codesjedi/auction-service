@@ -25,6 +25,14 @@ functions:
     handler: src/handlers/auctions/getById.handler
     events:
       - httpApi: 'GET /auctions/{id}'
+  placeBid:
+    handler: src/handlers/auctions/placeBid.handler
+    events:
+      - httpApi: 'PATCH /auctions/{id}/bid'
+  processAuctions:
+    handler: src/handlers/auctions/process.handler
+    # events:
+    #   - schedule: rate(1 minute)
 resources:
   Resources:
     AuctionsTable: ${file(src/resources/AuctionsTable.yml):AuctionsTable}

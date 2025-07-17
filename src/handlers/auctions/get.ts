@@ -1,6 +1,6 @@
 import createError from 'http-errors'
 
-import { LambdaResponse } from '../../lib/responses'
+import { HandlerResponse } from '../../lib/responses'
 import { dynamoDb } from '../../lib/dynamo'
 import commonMiddleware from '../../lib/commonMiddleware'
 
@@ -14,7 +14,7 @@ async function getAuctions() {
     const result = await dynamoDb.scan(params).promise()
     const auctions = result.Items || []
 
-    return LambdaResponse(200, {
+    return HandlerResponse(200, {
       message: 'Auctions retrieved successfully',
       count: auctions.length,
       auctions,

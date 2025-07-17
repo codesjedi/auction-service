@@ -15,6 +15,6 @@
   "description": "",
   "scripts": {
     "dev": "serverless dev",
-    "deploy": "serverless deploy"
+    "deploy": "serverless deploy --verbose"
   }
 }

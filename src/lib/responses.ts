@@ -1,6 +1,6 @@
 import { APIGatewayProxyResult } from 'aws-lambda'
 
-export const LambdaResponse = (
+export const HandlerResponse = (
   statusCode: number,
   body: object,
 ): APIGatewayProxyResult => {

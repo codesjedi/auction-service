@@ -4,8 +4,9 @@ import createHttpError from 'http-errors'
 import jsonBodyParser from '@middy/http-json-body-parser'
 
 import { dynamoDb } from '../../lib/dynamo'
-import { LambdaResponse } from '../../lib/responses'
+import { HandlerResponse } from '../../lib/responses'
 import commonMiddleware from '../../lib/commonMiddleware'
+import { Auction, AUCTION_STATUS } from '../../types/auction'
 
 async function createAuction(
   event: APIGatewayProxyEvent,
@@ -22,11 +23,18 @@ async function createAuction(
     )
   }
 
-  const auction = {
+  const now = new Date()
+  const endDate = new Date()
+  endDate.setHours(now.getHours() + 1)
+  const auction: Auction = {
     id: uuid(),
     title,
     status: 'OPEN',
-    createdAt: new Date().toISOString(),
+    createdAt: now.toISOString(),
+    endingAt: endDate.toISOString(),
+    highestBid: {
+      amount: 0,
+    },
   }
 
   try {
@@ -44,7 +52,7 @@ async function createAuction(
       }),
     )
   }
-  return LambdaResponse(201, {
+  return HandlerResponse(201, {
     message: 'Auction created successfully',
     auction,
   })

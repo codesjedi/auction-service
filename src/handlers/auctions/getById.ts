@@ -2,28 +2,37 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
 import createHttpError from 'http-errors'
 
 import { dynamoDb } from '../../lib/dynamo'
-import { LambdaResponse } from '../../lib/responses'
+import { HandlerResponse } from '../../lib/responses'
 import commonMiddleware from '../../lib/commonMiddleware'
+import { Auction } from '../../types/auction'
+import { DocumentClient } from 'aws-sdk/clients/dynamodb'
 
-async function getAuctionById(
+export async function getAuctionById(id: string): Promise<Auction> {
+  const results = await dynamoDb
+    .get({
+      TableName: process.env.AUCTIONS_TABLE_NAME!,
+      Key: { id },
+    })
+    .promise()
+  const auction = results.Item as DocumentClient.AttributeMap & Auction
+  if (!auction) {
+    throw new createHttpError.NotFound(
+      JSON.stringify({
+        error: `Auction with id ${id} not found.`,
+      }),
+    )
+  }
+  return auction
+}
+
+async function getAuction(
   event: APIGatewayProxyEvent,
 ): Promise<APIGatewayProxyResult> {
   const { id } = event.pathParameters!
   try {
-    const results = await dynamoDb
-      .get({
-        TableName: process.env.AUCTIONS_TABLE_NAME!,
-        Key: { id },
-      })
-      .promise()
-    const auction = results.Item
-    if (!auction) {
-      console.log(`Auction with id ${id} not found`)
-      return LambdaResponse(404, {
-        message: `Auction with id ${id} not found`,
-      })
-    }
-    return LambdaResponse(200, {
+    const auction = await getAuctionById(id!)
+
+    return HandlerResponse(200, {
       message: 'Auction retrieved successfully',
       auction,
     })
@@ -37,4 +46,4 @@ async function getAuctionById(
   }
 }
 
-export const handler = commonMiddleware(getAuctionById)
+export const handler = commonMiddleware(getAuction)
