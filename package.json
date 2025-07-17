@@ -16,5 +16,9 @@
   "scripts": {
     "dev": "serverless dev",
     "deploy": "serverless deploy --verbose"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.14",
+    "serverless-esbuild": "^1.55.1"
   }
 }

@@ -3,9 +3,12 @@ org: mangotest
 # "service" is the name of this project. This will also be added to your AWS resource names.
 service: auction-service
 
+plugins:
+  - serverless-esbuild
+
 provider:
   name: aws
-  runtime: nodejs22.x
+  runtime: nodejs20.x
   stage: ${opt:stage, 'dev'}
   iamRoleStatements:
     - ${file(src/iam/AuctionsTableIAM.yml):AuctionsTableIAM}
@@ -31,16 +34,26 @@ functions:
       - httpApi: 'PATCH /auctions/{id}/bid'
   processAuctions:
     handler: src/handlers/auctions/process.handler
-    # events:
-    #   - schedule: rate(1 minute)
+    events:
+      - schedule: rate(1 minute)
+
 resources:
   Resources:
     AuctionsTable: ${file(src/resources/AuctionsTable.yml):AuctionsTable}
-package:
-  patterns:
-    - '!node_modules/**'
+build:
+  esbuild: false
 
 custom:
+  esbuild:
+    bundle: true
+    minify: false
+    sourcemap: true
+    exclude: ['aws-sdk']
+    target: 'node20'
+    define:
+      require.resolve: undefined
+    platform: 'node'
+    concurrency: 10
   AuctionsTable:
     name: !Ref AuctionsTable
     arn: !GetAtt AuctionsTable.Arn
