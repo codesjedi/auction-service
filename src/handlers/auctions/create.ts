@@ -1,13 +1,11 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
 import { v4 as uuid } from 'uuid'
-import middy from '@middy/core'
-import httpjsonBodyParser from '@middy/http-json-body-parser'
-import httpEventNormalizer from '@middy/http-event-normalizer'
-import httpErrorHandler from '@middy/http-error-handler'
 import createHttpError from 'http-errors'
+import jsonBodyParser from '@middy/http-json-body-parser'
 
 import { dynamoDb } from '../../lib/dynamo'
 import { LambdaResponse } from '../../lib/responses'
+import commonMiddleware from '../../lib/commonMiddleware'
 
 async function createAuction(
   event: APIGatewayProxyEvent,
@@ -52,8 +50,4 @@ async function createAuction(
   })
 }
 
-export const handler = middy()
-  .use(httpjsonBodyParser())
-  .use(httpEventNormalizer())
-  .use(httpErrorHandler())
-  .handler(createAuction)
+export const handler = commonMiddleware(createAuction).use(jsonBodyParser())

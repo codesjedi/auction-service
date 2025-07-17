@@ -21,6 +21,10 @@ functions:
     handler: src/handlers/auctions/get.handler
     events:
       - httpApi: 'GET /auctions'
+  getAuctionById:
+    handler: src/handlers/auctions/getById.handler
+    events:
+      - httpApi: 'GET /auctions/{id}'
 resources:
   Resources:
     AuctionsTable: ${file(src/resources/AuctionsTable.yml):AuctionsTable}
