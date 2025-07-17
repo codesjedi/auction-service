@@ -6,7 +6,7 @@ import jsonBodyParser from '@middy/http-json-body-parser'
 import { dynamoDb } from '../../lib/dynamo'
 import { HandlerResponse } from '../../lib/responses'
 import commonMiddleware from '../../lib/commonMiddleware'
-import { Auction, AUCTION_STATUS } from '../../types/auction'
+import { Auction } from '../../types/auction'
 
 async function createAuction(
   event: APIGatewayProxyEvent,

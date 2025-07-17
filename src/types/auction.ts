@@ -1,6 +1,3 @@
-export enum AUCTION_STATUS {
-  'OPEN',
-}
 export interface Auction {
   id: string
   title: string
