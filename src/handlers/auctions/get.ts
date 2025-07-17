@@ -1,17 +1,23 @@
 import createError from 'http-errors'
+import { APIGatewayProxyEvent } from 'aws-lambda'
 
 import { HandlerResponse } from '@/lib/responses'
 import { dynamoDb } from '@/lib/dynamo'
 import commonMiddleware from '@/lib/commonMiddleware'
 
-async function getAuctions() {
-  try {
-    const params = {
-      TableName: process.env.AUCTIONS_TABLE_NAME!,
-      Limit: 100,
-    }
+async function getAuctions(event: APIGatewayProxyEvent) {
+  const { status } = event.queryStringParameters || {}
 
-    const result = await dynamoDb.scan(params).promise()
+  const params = {
+    TableName: process.env.AUCTIONS_TABLE_NAME!,
+    IndexName: 'statusAndEndDate',
+    KeyConditionExpression: '#status = :status',
+    ExpressionAttributeValues: { ':status': status },
+    ExpressionAttributeNames: { '#status': 'status' },
+  }
+
+  try {
+    const result = await dynamoDb.query(params).promise()
     const auctions = result.Items || []
 
     return HandlerResponse(200, {
