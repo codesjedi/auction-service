@@ -1,8 +1,8 @@
 import createError from 'http-errors'
 
-import { HandlerResponse } from '../../lib/responses'
-import { dynamoDb } from '../../lib/dynamo'
-import commonMiddleware from '../../lib/commonMiddleware'
+import { HandlerResponse } from '@/lib/responses'
+import { dynamoDb } from '@/lib/dynamo'
+import commonMiddleware from '@/lib/commonMiddleware'
 
 async function getAuctions() {
   try {

@@ -1,4 +1,4 @@
-import { getEndedAuctions } from '../../lib/getEndedAuctions'
+import { getEndedAuctions } from '@/lib/getEndedAuctions'
 
 async function processAuctions() {
   console.log('processing auctions!')

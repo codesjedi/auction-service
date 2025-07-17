@@ -3,10 +3,10 @@ import { v4 as uuid } from 'uuid'
 import createHttpError from 'http-errors'
 import jsonBodyParser from '@middy/http-json-body-parser'
 
-import { dynamoDb } from '../../lib/dynamo'
-import { HandlerResponse } from '../../lib/responses'
-import commonMiddleware from '../../lib/commonMiddleware'
-import { Auction } from '../../types/auction'
+import { dynamoDb } from '@/lib/dynamo'
+import { HandlerResponse } from '@/lib/responses'
+import commonMiddleware from '@/lib/commonMiddleware'
+import { Auction } from '@/types/auction'
 
 async function createAuction(
   event: APIGatewayProxyEvent,
