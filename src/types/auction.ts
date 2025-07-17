@@ -3,7 +3,7 @@ export interface Auction {
   title: string
   createdAt: string
   endingAt: string
-  status: 'OPEN'
+  status: 'OPEN' | 'CLOSED'
   highestBid: {
     amount: number
   }

@@ -19,6 +19,14 @@ async function placeBid(event: APIGatewayProxyEvent) {
 
   const auction = await getAuctionById(id!)
 
+  if (auction.status !== 'OPEN') {
+    throw new createHttpError.Forbidden(
+      JSON.stringify({
+        error: 'You cannot bid on closed auctions',
+      }),
+    )
+  }
+
   if (amount <= auction.highestBid.amount) {
     throw new createHttpError.Forbidden(
       JSON.stringify({
