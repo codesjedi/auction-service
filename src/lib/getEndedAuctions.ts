@@ -1,3 +1,4 @@
+import { Auction } from '@/types/auction'
 import { dynamoDb } from './dynamo'
 
 export async function getEndedAuctions() {
@@ -17,5 +18,5 @@ export async function getEndedAuctions() {
 
   const result = await dynamoDb.query(params).promise()
 
-  return result.Items
+  return result.Items as Auction[]
 }
