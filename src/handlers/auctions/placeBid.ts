@@ -6,6 +6,7 @@ import commonMiddleware from '@/lib/commonMiddleware'
 import { HandlerResponse } from '@/lib/responses'
 import { dynamoDb } from '@/lib/dynamo'
 import { getAuctionById } from './getById'
+import placeBidSchema from './placeBid.schema.json'
 
 async function placeBid(event: APIGatewayProxyEvent) {
   const { amount } = event.body as any
@@ -60,4 +61,4 @@ async function placeBid(event: APIGatewayProxyEvent) {
   }
 }
 
-export const handler = commonMiddleware(placeBid).use(jsonBodyParser())
+export const handler = commonMiddleware(placeBid, placeBidSchema, true)

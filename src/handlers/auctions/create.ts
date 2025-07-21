@@ -50,6 +50,8 @@ async function createAuction(
   })
 }
 
-export const handler = commonMiddleware(createAuction, createAuctionSchema).use(
-  jsonBodyParser(),
+export const handler = commonMiddleware(
+  createAuction,
+  createAuctionSchema,
+  true,
 )

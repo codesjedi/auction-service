@@ -1,7 +1,6 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
 import createHttpError from 'http-errors'
 import { DocumentClient } from 'aws-sdk/clients/dynamodb'
-import jsonBodyParser from '@middy/http-json-body-parser'
 
 import { dynamoDb } from '@/lib/dynamo'
 import { HandlerResponse } from '@/lib/responses'
