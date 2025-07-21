@@ -4,6 +4,7 @@ import { APIGatewayProxyEvent } from 'aws-lambda'
 import { HandlerResponse } from '@/lib/responses'
 import { dynamoDb } from '@/lib/dynamo'
 import commonMiddleware from '@/lib/commonMiddleware'
+import getAuctionsSchema from './getAuctions.schema.json'
 
 async function getAuctions(event: APIGatewayProxyEvent) {
   const { status } = event.queryStringParameters || {}
@@ -37,4 +38,4 @@ async function getAuctions(event: APIGatewayProxyEvent) {
   }
 }
 
-export const handler = commonMiddleware(getAuctions)
+export const handler = commonMiddleware(getAuctions, getAuctionsSchema)

@@ -7,21 +7,13 @@ import { dynamoDb } from '@/lib/dynamo'
 import { HandlerResponse } from '@/lib/responses'
 import commonMiddleware from '@/lib/commonMiddleware'
 import { Auction } from '@/types/auction'
+import createAuctionSchema from './create.schema.json'
 
 async function createAuction(
   event: APIGatewayProxyEvent,
   context: any,
 ): Promise<APIGatewayProxyResult> {
   const { title } = event.body as any
-
-  if (!title) {
-    console.log('Title is required')
-    throw new createHttpError.BadRequest(
-      JSON.stringify({
-        error: 'Title is required',
-      }),
-    )
-  }
 
   const now = new Date()
   const endDate = new Date()
@@ -58,4 +50,6 @@ async function createAuction(
   })
 }
 
-export const handler = commonMiddleware(createAuction).use(jsonBodyParser())
+export const handler = commonMiddleware(createAuction, createAuctionSchema).use(
+  jsonBodyParser(),
+)

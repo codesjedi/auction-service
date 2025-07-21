@@ -1,11 +1,13 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
 import createHttpError from 'http-errors'
 import { DocumentClient } from 'aws-sdk/clients/dynamodb'
+import jsonBodyParser from '@middy/http-json-body-parser'
 
 import { dynamoDb } from '@/lib/dynamo'
 import { HandlerResponse } from '@/lib/responses'
 import commonMiddleware from '@/lib/commonMiddleware'
 import { Auction } from '@/types/auction'
+import getAuctionByIdSchema from './getById.schema.json'
 
 export async function getAuctionById(id: string): Promise<Auction> {
   const results = await dynamoDb
@@ -46,4 +48,4 @@ async function getAuction(
   }
 }
 
-export const handler = commonMiddleware(getAuction)
+export const handler = commonMiddleware(getAuction, getAuctionByIdSchema)
