@@ -14,12 +14,14 @@ async function createAuction(
   context: any,
 ): Promise<APIGatewayProxyResult> {
   const { title } = event.body as any
+  const { accountId } = event.requestContext
 
   const now = new Date()
   const endDate = new Date()
   endDate.setHours(now.getHours() + 1)
   const auction: Auction = {
     id: uuid(),
+    seller: accountId,
     title,
     status: 'OPEN',
     createdAt: now.toISOString(),

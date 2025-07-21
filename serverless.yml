@@ -11,24 +11,45 @@ provider:
     - ${file(src/iam/AuctionsTableIAM.yml):AuctionsTableIAM}
   environment:
     AUCTIONS_TABLE_NAME: ${self:custom.AuctionsTable.name}
+  httpApi:
+    authorizers:
+      customAuthorizer:
+        type: request
+        functionArn: ${self:custom.authorizer}
 
 functions:
   createAuction:
     handler: src/handlers/auctions/create.handler
     events:
-      - httpApi: 'POST /auctions'
+      - httpApi:
+          method: POST
+          path: /auctions
+          authorizer:
+            name: customAuthorizer
   getAuctions:
     handler: src/handlers/auctions/get.handler
     events:
-      - httpApi: 'GET /auctions'
+      - httpApi:
+          method: GET
+          path: /auctions
+          authorizer:
+            name: customAuthorizer
   getAuctionById:
     handler: src/handlers/auctions/getById.handler
     events:
-      - httpApi: 'GET /auctions/{id}'
+      - httpApi:
+          method: GET
+          path: /auctions/{id}
+          authorizer:
+            name: customAuthorizer
   placeBid:
     handler: src/handlers/auctions/placeBid.handler
     events:
-      - httpApi: 'PATCH /auctions/{id}/bid'
+      - httpApi:
+          method: PATCH
+          path: /auctions/{id}/bid
+          authorizer:
+            name: customAuthorizer
   processAuctions:
     handler: src/handlers/auctions/process.handler
 
@@ -37,6 +58,7 @@ resources:
     AuctionsTable: ${file(src/resources/AuctionsTable.yml):AuctionsTable}
 
 custom:
+  authorizer: arn:aws:lambda:${aws:region}:${aws:accountId}:function:serverless-auth0-authorizer-${self:provider.stage}-auth
   AuctionsTable:
     name: !Ref AuctionsTable
     arn: !GetAtt AuctionsTable.Arn

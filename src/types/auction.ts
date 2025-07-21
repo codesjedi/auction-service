@@ -7,4 +7,5 @@ export interface Auction {
   highestBid: {
     amount: number
   }
+  seller: string
 }
