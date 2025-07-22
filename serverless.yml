@@ -60,7 +60,7 @@ functions:
     events:
       - httpApi:
           method: PATCH
-          path: /auction/{id}/picture
+          path: /auctions/{id}/picture
           authorizer:
             name: customAuthorizer
 
