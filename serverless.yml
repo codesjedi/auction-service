@@ -9,8 +9,10 @@ provider:
   stage: ${opt:stage, 'dev'}
   iamRoleStatements:
     - ${file(src/iam/AuctionsTableIAM.yml):AuctionsTableIAM}
+    - ${file(src/iam/AuctionsBucketIAM.yml):AuctionsBucketIAM}
   environment:
     AUCTIONS_TABLE_NAME: ${self:custom.AuctionsTable.name}
+    AUCTIONS_BUCKET_NAME: ${self:custom.AuctionsBucket.name}
   httpApi:
     authorizers:
       customAuthorizer:
@@ -53,15 +55,28 @@ functions:
   processAuctions:
     handler: src/handlers/auctions/process.handler
 
+  uploadAuctionPicture:
+    handler: src/handlers/auctions/uploadPicture.handler
+    events:
+      - httpApi:
+          method: PATCH
+          path: /auction/{id}/picture
+          authorizer:
+            name: customAuthorizer
+
 resources:
   Resources:
     AuctionsTable: ${file(src/resources/AuctionsTable.yml):AuctionsTable}
+    AuctionsBucket: ${file(src/resources/AuctionsBucket.yml):AuctionsBucket}
+    AuctionsBucketPolicy: ${file(src/resources/AuctionsBucket.yml):AuctionsBucketPolicy}
 
 custom:
   authorizer: arn:aws:lambda:${aws:region}:${aws:accountId}:function:serverless-auth0-authorizer-${self:provider.stage}-auth
   AuctionsTable:
     name: !Ref AuctionsTable
     arn: !GetAtt AuctionsTable.Arn
+  AuctionsBucket:
+    name: auctions-bucket-enrique-${self:provider.stage}
 
 package:
   individually: true
