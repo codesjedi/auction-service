@@ -11,6 +11,7 @@ import placeBidSchema from './placeBid.schema.json'
 async function placeBid(event: APIGatewayProxyEvent) {
   const { amount } = event.body as any
   const { id } = event.pathParameters!
+  const { email } = event.requestContext.authorizer as { email: string }
 
   if (!amount) {
     return HandlerResponse(400, {
@@ -39,9 +40,11 @@ async function placeBid(event: APIGatewayProxyEvent) {
   const params = {
     TableName: process.env.AUCTIONS_TABLE_NAME!,
     Key: { id },
-    UpdateExpression: 'set highestBid.amount = :amount',
+    UpdateExpression:
+      'set highestBid.amount = :amount, highestBid.bidder = :bidder',
     ExpressionAttributeValues: {
       ':amount': amount,
+      ':bidder': email,
     },
     ReturnValues: 'ALL_NEW',
   }
